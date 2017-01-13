@@ -3,7 +3,8 @@
     "version":"0.0.1",
     "dependencies":{
     	"socket.io":"0.9.16",
-    	"express":"3.2.6"
+    	"express":"3.2.6",
+    	"static-favicon": "~1.0.0"
     },
   "engines": {
     "node": "6.3.1",
