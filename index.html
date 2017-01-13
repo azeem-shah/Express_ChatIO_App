@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat IO Express</title>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+	#chat{
+     height:500px;
+	}
+	#contentWrap{
+		display:none;
+	}	
+	#nickError{
+		display:none;
+	}
+	#chatWrap{
+		float: left;
+	
+	}
+	</style>
+	
+</head>
+<body>
+
+<div class="rows">
+<div class="col-md-4">
+	
+</div>
+	<div class="col-md-4">
+	<div id="nickWrap" class="panel panel-primary">
+<div class="panel-heading">Welcome to Chat IO</div>
+<form id="setNick">
+     <label>Enter Username</label>
+     <p id="nickError" class="alert alert-danger" ></p>
+	<input size="35" id="nickname" class="form-control"></input>
+	<br />
+	<br />
+	
+	&nbsp;<input type="submit" class="btn btn-primary" ></input>
+	<br />
+
+
+</form>	
+<br />
+</div>
+
+<div id="contentWrap" >
+<div id="chatWrap" class="panel panel-primary">
+	<div class="panel-heading">Chat Here</div>
+
+<div id="chat"></div>
+
+<form id="send-message">
+	<input size="35" id="message" class="form-control"></input>
+	<br />
+	<input type="submit" class="btn btn-primary"></input>
+</form>
+<br />
+</div>
+<div id="users">
+	
+</div>
+	
+</div>
+	
+</div>
+<div class="col-md-4">
+	
+</div>
+</div>
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="   crossorigin="anonymous"></script>
+<script src="/socket.io/socket.io.js" ></script>
+	
+<script>
+	
+	jQuery(function($){
+     var socket=io.connect();
+     var $nickForm=$('#setNick');
+     var $nickError=$('#nickError');
+     var $nickBox=$('#nickname');
+     var $users=$('#users');
+     var $messageForm=$('#send-message');
+      var $messageBox=$('#message');
+       var $chat=$('#chat');
+
+       $nickForm.submit(function(e){
+    e.preventDefault();
+    socket.emit('new user',$nickBox.val(),function(data){
+      if(data){
+      $('#nickWrap').hide();
+      $('#contentWrap').show();
+
+      }else {
+      $nickError.show();
+      $nickError.html('Username taken. Try again.')
+      }
+    });
+    $nickBox.val('')
+       });
+
+$messageForm.submit(function(e){
+	e.preventDefault();
+	socket.emit('send message', $messageBox.val());
+	$messageBox.val('');
+});
+
+socket.on('usernames',function(data){
+	var html="";
+	for(i=0;i<data.length;i++){
+	html+=data[i]+"<br />";
+	}
+	$users.html(html);
+
+});
+
+socket.on('new message',function(data){
+	$chat.append('<b>'+data.nick+': </b>'+data.msg+"<br />");
+});
+	});
+</script>
+
+
+
+</body>
+</html>
