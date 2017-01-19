@@ -1,0 +1,1 @@
+This is a Simle chatIO based app. Download or Clone. To run $ node app.js 
